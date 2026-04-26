@@ -124,6 +124,8 @@ graph LR
 ```
 
 ### 2. System Architecture
+Visualizes the physical components and their interactions.
+
 ```mermaid
 graph TD
     subgraph "Frontend (React)"
@@ -167,7 +169,126 @@ graph TD
     end
 ```
 
-### 4. Sequence Diagram (Prediction Flow)
+### 4. DFD Level-1 (Process Decomposition)
+Breaks down the system into detailed functional processes.
+
+```mermaid
+graph TD
+    User((User))
+    
+    subgraph "Process 1.0: Auth Service"
+        P1[1.1 Verify Credentials]
+        P2[1.2 Session Management]
+    end
+    
+    subgraph "Process 2.0: Prediction Engine"
+        P3[2.1 Data Validation]
+        P4[2.2 Feature Encoding]
+        P5[2.3 ML Inference]
+    end
+    
+    subgraph "Process 3.0: Data Management"
+        P6[3.1 Result Persistence]
+        P7[3.2 History Retrieval]
+    end
+    
+    D1[(User DB)]
+    D2[(Prediction DB)]
+    ML{Flask ML Service}
+
+    User -->|Credentials| P1
+    P1 <--> D1
+    P1 --> P2
+    
+    User -->|Student Data| P3
+    P3 --> P4
+    P4 --> P5
+    P5 <--> ML
+    
+    P5 --> P6
+    P6 --> D2
+    
+    User -->|Request History| P7
+    P7 <--> D2
+```
+
+### 5. Use Case Diagram
+Defines the interactions between actors and the system.
+
+```mermaid
+graph LR
+    Student((Student))
+    Admin((Admin))
+
+    subgraph "Student Performance System"
+        UC1(Register/Login)
+        UC2(Input Academic Data)
+        UC3(Predict Grade & Score)
+        UC4(View Performance Dashboard)
+        UC5(Download Result Report)
+        UC6(System Monitoring)
+        UC7(User Management)
+    end
+
+    Student --- UC1
+    Student --- UC2
+    Student --- UC3
+    Student --- UC4
+    Student --- UC5
+    
+    Admin --- UC1
+    Admin --- UC6
+    Admin --- UC7
+    Admin --- UC4
+```
+
+### 6. UML Class Diagram
+Represents the static structure and relationships of system classes.
+
+```mermaid
+classDiagram
+    class User {
+        +String id
+        +String name
+        +String email
+        +String password
+        +register()
+        +login()
+        +getProfile()
+    }
+
+    class Prediction {
+        +String id
+        +ObjectId userId
+        +Object inputs
+        +String prediction
+        +Number score
+        +save()
+        +static findByUserId()
+    }
+
+    class AuthController {
+        +registerUser(req, res)
+        +loginUser(req, res)
+    }
+
+    class PredictionController {
+        +makePrediction(req, res)
+        +getPredictionHistory(req, res)
+    }
+
+    class MLService {
+        +predictGrade(data)
+        +predictScore(data)
+    }
+
+    User "1" -- "0..*" Prediction : makes
+    AuthController ..> User : manages
+    PredictionController ..> Prediction : manages
+    PredictionController ..> MLService : calls
+```
+
+### 7. Sequence Diagram (Prediction Flow)
 ```mermaid
 sequenceDiagram
     participant U as User
@@ -186,7 +307,7 @@ sequenceDiagram
     FE-->>U: Show ResultCard (Grade/Score)
 ```
 
-### 5. Entity Relationship Diagram (ERD)
+### 8. Entity Relationship Diagram (ERD)
 ```mermaid
 erDiagram
     USER ||--o{ PREDICTION : "makes"
@@ -206,7 +327,7 @@ erDiagram
     }
 ```
 
-### 6. Activity Diagram (User Workflow)
+### 9. Activity Diagram (User Workflow)
 ```mermaid
 stateDiagram-v2
     [*] --> Login
