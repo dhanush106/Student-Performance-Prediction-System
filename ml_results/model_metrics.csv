@@ -1,0 +1,5 @@
+Model,MAE,R2,Accuracy
+RF Regression,2.06510775,0.9228705653241598,
+XGB Regression,1.7090808807754518,0.9498745251901471,
+RF Classification,,,0.9095
+XGB Classification,,,0.918
